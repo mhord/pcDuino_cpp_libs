@@ -1,5 +1,5 @@
-#ifndef __gpio_test_h__
-#define __gpio_test_h__
+#ifndef __gpio_h__
+#define __gpio_h__
 
 
 // Make some aliases to make the code more readable.
@@ -12,19 +12,18 @@
 #define SPIPIN '2'
 #define SPIPIN2 '3'
 #define I2CPIN '2'
+
 class gpio
 {
 	public:
-		gpio(int pinID, int initMode, int initVal = LOW);
+		gpio(int pinID, int initMode, int initVal=LOW);
 		~gpio();
 		void mode(int newMode);
 		void pinWrite(int newLevel);
 		int pinRead();
 
 	private:
-		void writeFile(int fileID, int value);
-		int _modeFileID;
-		int _pinFileID;
+    gpio();
 };
 
 #endif

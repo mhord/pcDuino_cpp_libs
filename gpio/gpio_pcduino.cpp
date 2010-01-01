@@ -5,6 +5,10 @@
 
 #include "gpio.h"
 
+int _pinFileID, _modeFileID;
+
+void writeFile(int fileID, int value);
+
 gpio::gpio(int pinID, int initMode, int initVal)
 {
   char path[41];
@@ -31,7 +35,7 @@ gpio::~gpio()
 // While it seems okay to only *read* the first value from the file, you
 //   seemingly must write four bytes to the file to get the I/O setting to
 //   work properly. This function does that.
-void gpio::writeFile(int fileID, int value)
+void writeFile(int fileID, int value)
 {
   char buffer[4];  // A place to build our four-byte string.
   memset((void *)buffer, 0, sizeof(buffer)); // clear the buffer out.
