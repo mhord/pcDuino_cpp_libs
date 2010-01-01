@@ -10,7 +10,8 @@
 #define OUTPUT '1'
 #define INPUT_PU '8'
 #define SPIPIN '2'
-
+#define SPIPIN2 '3'
+#define I2CPIN '2'
 class gpio
 {
 	public:

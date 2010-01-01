@@ -7,6 +7,7 @@
 #include <linux/i2c.h>
 
 #include "../gpio/gpio.h"
+#include "i2c_port.h"
 
 i2c_device *_portOwner = NULL;
 
@@ -26,13 +27,13 @@ void i2c_port::configurePins()
 {
 	if (_portID == 0)
 	{
-		_SDA = new gpio(11, SPIPIN);
-		_SCL = new gpio(12, SPIPIN);
+		_SDA = new gpio(18, I2CPIN);
+		_SCL = new gpio(19, I2CPIN);
 	}
 	else if (_portID == 2)
 	{
-		_SDA = new gpio(11, SPIPIN);
-		_SCL = new gpio(12, SPIPIN);
+		_SDA = new gpio(11, I2CPIN);
+		_SCL = new gpio(12, I2CPIN);
 	}
 }
 
@@ -42,12 +43,9 @@ void i2c_port::configurePort()
 {
 }
 
-void writeBytes(unsigned char *buffer, int len)
+void i2c_port::transferPackets(i2c_rdwr_ioctl_data *transactions)
 {
-}
-
-void readBytes(unsigned char *buffer, int len)
-{
+  ioctl(_portFD, I2C_RDWR, transactions);
 }
 
 bool i2c_port::doIOwn(i2c_device *curiousDevice)
