@@ -8,10 +8,12 @@ class i2c_port
     ~i2c_port();
     void takeOwnership(i2c_device *bossyDevice);
     bool doIOwn(i2c_device *curiousDevice);
-    void writeBytes(int regAddr, unsigned char *buffer, int len);
-    void readBytes(int regAddr, unsigned char *buffer, int len);
+    void writeBytes(unsigned char *buffer, int len);
+    void readBytes(unsigned char *buffer, int len);
   private:
     i2c_device *portOwner;
     int _portFD;
     int _portID;
+    void configurePort();
+    void configurePins();
 }
