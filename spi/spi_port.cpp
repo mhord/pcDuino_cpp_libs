@@ -20,6 +20,7 @@ spi_port::spi_port(int spiFile, int spiDriver)
 									 
 {
 	_spiFile = spiFile;
+  _portOwner = NULL;
 	configurePins(spiDriver);
 }
 
@@ -49,20 +50,20 @@ void spi_port::configurePort()
 	{
 		return;
 	}
-
 	// Set up the CS pin for the operation. We'll (naively) assume that the user
 	//  hasn't done anything to the mode of the pins since we made them SPI pins,
 	//  but we *do* need to worry about CS. If the owner of the port has a 
 	//  non-standard CS pin, we need to use that one. Otherwise, we should use
 	//  the default. Note that the NO_CS_PIN argument in the spi_ioc_transfer
 	//  struct doesn't work with this library.
-	if (_portOwner->whichCSPin() == NULL)
+	if (!_portOwner->customCS())
 	{
 		_CS->mode(SPIPIN);
 	}
 	else
 	{
-		_CS = _portOwner->whichCSPin();
+    _CS->pinWrite(HIGH);
+    _CS->mode(OUTPUT);
 	}
 
 	// We'll make a little temp variable to transmit the various mode info to 
@@ -89,12 +90,12 @@ void spi_port::configurePort()
 
 void spi_port::transferData(spi_ioc_transfer *xfer)
 {
-	if (_portOwner->whichCSPin() != NULL)
+	if (_portOwner->customCS())
 	{
 		_portOwner->CSLow();
 	}
 	ioctl(_spiFile, SPI_IOC_MESSAGE(1), xfer);
-	if (_portOwner->whichCSPin() != NULL)
+	if (_portOwner->customCS())
 	{
 		_portOwner->CSHigh();
 	}
@@ -110,3 +111,4 @@ void spi_port::takeOwnership(spi_device *bossyDevice)
   _portOwner = bossyDevice;
   configurePort();
 }
+

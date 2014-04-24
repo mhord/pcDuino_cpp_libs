@@ -21,6 +21,14 @@ spi_device::spi_device(spi_port *port, \
 		_speed = speed;
 		_lsbFirst = lsbFirst;
 		_csPin = csPin;
+    if (csPin == NULL)
+    {
+      _customCS = false;
+    }
+    else
+    {
+      _customCS = true;
+    }
 }
 
 void spi_device::transferData(unsigned char *dataOut, \
@@ -29,8 +37,8 @@ void spi_device::transferData(unsigned char *dataOut, \
                               bool deselect)
 {
 	spi_ioc_transfer xfer;	
-	xfer.tx_buf = (unsigned long)dataOut;
-	xfer.rx_buf = (unsigned long)dataIn;
+	xfer.tx_buf =(unsigned long)dataOut;
+	xfer.rx_buf =(unsigned long)dataIn;
 	xfer.len = len;
 	xfer.speed_hz = _speed;
 	xfer.bits_per_word = 8;
@@ -42,28 +50,32 @@ void spi_device::transferData(unsigned char *dataOut, \
 	{
 		xfer.cs_change = 0;
 	}
-
 	if (_port->doIOwn(this))
 	{
 		_port->takeOwnership(this);
 	}
-
 	_port->transferData(&xfer);
 }
 
-gpio* spi_device::whichCSPin()
+gpio* spi_device::getCSPin()
 {
-  return _csPin;
+  return this->_csPin;
 }
 
+bool spi_device::customCS()
+{
+  return this->_customCS;
+}
 void spi_device::CSLow()
 {
-  _csPin->pinWrite(LOW);
+  if (_csPin != NULL)
+    _csPin->pinWrite(LOW);
 }
 
 void spi_device::CSHigh()
 {
-  _csPin->pinWrite(HIGH);
+  if (_csPin != NULL)
+    _csPin->pinWrite(HIGH);
 }
 
 bool spi_device::doLSBFirst()
@@ -75,3 +87,4 @@ int spi_device::getSPIMode()
 {
   return _spiMode;
 }
+

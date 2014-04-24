@@ -19,17 +19,19 @@ class spi_device
 		                  unsigned char *inData = NULL, \
 											unsigned int len = 1, \
 											bool deselect = true);
-    gpio* whichCSPin(); 
+    bool customCS();
     void CSLow();
     void CSHigh();
     bool doLSBFirst();
     int getSPIMode();
-		spi_port *_port;
+    gpio* getCSPin();
 	protected:
+		gpio *_csPin;
+    bool _customCS;
+		spi_port *_port;
 		unsigned char _spiMode;
 		long _speed;
 		bool _lsbFirst;
-		gpio *_csPin;
 
 };
 #endif
