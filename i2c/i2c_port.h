@@ -12,5 +12,6 @@ class i2c_port
     void readBytes(int regAddr, unsigned char *buffer, int len);
   private:
     i2c_device *portOwner;
-
+    int _portFD;
+    int _portID;
 }
